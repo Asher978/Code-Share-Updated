@@ -1,13 +1,7 @@
-// const authHelpers = require('../services/auth/auth-helpers');
-
-// userRoutes.get('/', authHelpers.loginRequired, usersController.index);
-
-
 const userRoutes = require('express').Router();
 const usersController = require('../controllers/users-controller');
 const passport = require('passport');
-const passportConf = require('../services/auth/jwt');
-// const passportLoc = require('../services/auth/local');
+const passportConfig = require('../services/auth/jwt');
 const { validateBody, schemas } = require('../services/validators/validate')
 
 
