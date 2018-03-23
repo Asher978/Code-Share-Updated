@@ -51,8 +51,8 @@ module.exports = (socket) => {
     rooms[room_name].addCoder(user);
     socket.room = room_name;
     socket.join(room_name);
+    io.sockets.emit('rooms', rooms)    
     io.sockets.in(room_name).emit('room_coders', rooms[room_name].coders)
-    io.sockets.emit('rooms', rooms)
   });
 
 
