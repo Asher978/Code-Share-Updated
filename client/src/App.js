@@ -120,7 +120,7 @@ class App extends Component {
   };
 
   render () {
-    const { auth, joinRoom, form, email, password, room_name, coders, rooms, user } = this.state;
+    const { auth, joinRoom, form, email, password, room_name, coders, user } = this.state;
     return (
       <div>
         <Nav auth={auth} setPage={this.setPage} handleLogOut={this.handleLogOut}/>
@@ -146,7 +146,6 @@ class App extends Component {
               render={ (props) => auth ? <Profile 
                                       room_name={room_name}
                                       coders={coders}
-                                      rooms={rooms}
                                       socket={socket}
                                       handleInputChange={this.handleInputChange}
                                       handleSubmitRoom={this.handleSubmitRoom}
