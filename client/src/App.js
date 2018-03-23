@@ -23,7 +23,6 @@ class App extends Component {
     socket: null,
     room_name: "",
     coders: [],
-    rooms:[],
   }
   
   
@@ -34,13 +33,8 @@ class App extends Component {
       socket.connect();
       socket.emit('connected');
       socket.on('users', users => {
-        console.log("FROM CDM receing users", users)
         this.setState({ coders: Object.values(users) })
       })
-      socket.on('rooms', rooms => {
-        this.setState({ rooms: Object.values(rooms) })
-      })
-
     }
   }
 
@@ -61,18 +55,14 @@ class App extends Component {
     const { room_name, user } = this.state;
     if(room_name, user) {
       socket.emit('add_room', room_name, user);
+      socket.emit('connected');
       this.setState({ room_name: "" });
-      
-      socket.on('rooms', rooms => {
-        this.setState({ rooms: Object.values(rooms) })
-      })
     }
   }
 
   // user joins an exisiting room
   handleJoinRoom = (room_name) => {
     const { user } = this.state;
-    console.log("join pressed", room_name)
    socket.emit('join_room', room_name, user) 
   }
 
@@ -115,7 +105,6 @@ class App extends Component {
       }).catch(err => console.log(err));
 
       socket.on('users', users => {
-        console.log("FROM Login receing users", users)
         this.setState({ coders: Object.values(users) })
       })
   };
