@@ -97,16 +97,28 @@ module.exports = (socket) => {
     }
   })
 
+  // user logs off from the app
+  socket.on('log_off', () => {
+    let updatedUsers = delUser(connectedUsers, socket);
+    io.sockets.emit('users', updatedUsers);    
+  });
+
   // user leaves the app
   socket.on('disconnect', () => {
-    
-    for (let user in connectedUsers) {
-      if (connectedUsers[user].sID === socket.id) {
-        delete connectedUsers[user];
-      };
-    }
-    io.sockets.emit('users', connectedUsers);
-  })
+    let updatedUsers = delUser(connectedUsers, socket)
+    io.sockets.emit('users', updatedUsers);
+  });
   
-  
+}
+
+
+// delete the disconnecting / logging off user from the connected-users object
+function delUser (users, socket) {
+
+  for (let user in users) {
+    if (users[user].sID === socket.id) {
+      delete users[user];
+    };
+  };
+  return users;
 }
