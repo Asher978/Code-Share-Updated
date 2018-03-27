@@ -26,21 +26,28 @@ class App extends Component {
   }
   
   
-  componentDidMount () {
+  async componentDidMount () {
+    await this.getCurrentUser();
     const { auth } = this.state;
     if (auth) {
-      this.getCurrentUser();
+      const { user } = this.state;
+      console.log("USER FROM CDM", user)
       socket.connect();
-      socket.emit('connected');
+      socket.emit('connected', user);
       socket.on('users', users => {
         this.setState({ coders: Object.values(users) })
       })
     }
   }
 
-  getCurrentUser = () => {
+  componentWillUnmount() {
+    console.log("CWUM RAN");
+    socket.emit('disconnect')
+  }
+
+  async getCurrentUser () {
     const token = Auth.getToken();
-    axios.get('/user/current_user', {
+    await axios.get('/user/current_user', {
       headers: {
         'Authorization': `jwt ${Auth.getToken()}`,
       }
@@ -55,7 +62,7 @@ class App extends Component {
     const { room_name, user } = this.state;
     if(room_name, user) {
       socket.emit('add_room', room_name, user);
-      socket.emit('connected');
+      socket.emit('connected', user);
       this.setState({ room_name: "" });
     }
   }
@@ -113,6 +120,7 @@ class App extends Component {
     axios.get('/user/logout')
       .then(res => {
         if (res.status === 200) {
+          socket.emit('log_off');
           Auth.deauthenticateUser();
           this.setState({ auth: Auth.isUserAuthenticated() });
         }
@@ -147,6 +155,7 @@ class App extends Component {
                                       room_name={room_name}
                                       coders={coders}
                                       socket={socket}
+                                      user={user}
                                       handleInputChange={this.handleInputChange}
                                       handleSubmitRoom={this.handleSubmitRoom}
                                       handleJoinRoom={this.handleJoinRoom}
