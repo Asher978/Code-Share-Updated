@@ -14,7 +14,7 @@ export default (props) => {
   return (
     <aside className="left-pan">
       <div className="code text-center">
-        <h4 className="code-name">Room Name</h4>
+        <h4 className="code-name">{room_name}</h4>
         <Codemirror options={options} />
       </div>
       <div className="result alert alert-warning" role="alert">Results of your code execution will display here...</div>
