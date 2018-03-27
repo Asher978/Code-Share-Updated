@@ -6,6 +6,7 @@ export default class Profile extends Component {
   state = {
     activeItem: null,
     active: false,
+    rooms: [],
     items: [
       {
         id: 1,
@@ -24,6 +25,14 @@ export default class Profile extends Component {
       }
     ]
   };
+  
+
+  componentDidMount() {
+    const { socket } = this.props;
+    socket.on('rooms', rooms => {
+      this.setState({ rooms: Object.values(rooms) })
+    })
+  }
 
   onSelectActive = (itemId) => {
     const prevState = this.state.active;
@@ -45,8 +54,8 @@ export default class Profile extends Component {
   }
 
   renderProfileNavItems = () => {
-    const { items, activeItem, active } = this.state;
-    const { coders, rooms, handleJoinRoom, history } = this.props;
+    const { items, activeItem, active, rooms } = this.state;
+    const { coders, handleJoinRoom, history } = this.props;
     let data = null;
     return items.map(item => {
       switch (item.id) {

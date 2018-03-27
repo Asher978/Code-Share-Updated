@@ -23,30 +23,31 @@ class App extends Component {
     socket: null,
     room_name: "",
     coders: [],
-    rooms:[],
   }
   
   
-  componentDidMount () {
+  async componentDidMount () {
+    await this.getCurrentUser();
     const { auth } = this.state;
     if (auth) {
-      this.getCurrentUser();
+      const { user } = this.state;
+      console.log("USER FROM CDM", user)
       socket.connect();
-      socket.emit('connected');
+      socket.emit('connected', user);
       socket.on('users', users => {
-        console.log("FROM CDM receing users", users)
         this.setState({ coders: Object.values(users) })
       })
-      socket.on('rooms', rooms => {
-        this.setState({ rooms: Object.values(rooms) })
-      })
-
     }
   }
 
-  getCurrentUser = () => {
+  componentWillUnmount() {
+    console.log("CWUM RAN");
+    socket.emit('disconnect')
+  }
+
+  async getCurrentUser () {
     const token = Auth.getToken();
-    axios.get('/user/current_user', {
+    await axios.get('/user/current_user', {
       headers: {
         'Authorization': `jwt ${Auth.getToken()}`,
       }
@@ -61,18 +62,14 @@ class App extends Component {
     const { room_name, user } = this.state;
     if(room_name, user) {
       socket.emit('add_room', room_name, user);
+      socket.emit('connected', user);
       this.setState({ room_name: "" });
-      
-      socket.on('rooms', rooms => {
-        this.setState({ rooms: Object.values(rooms) })
-      })
     }
   }
 
   // user joins an exisiting room
   handleJoinRoom = (room_name) => {
     const { user } = this.state;
-    console.log("join pressed", room_name)
    socket.emit('join_room', room_name, user) 
   }
 
@@ -115,7 +112,6 @@ class App extends Component {
       }).catch(err => console.log(err));
 
       socket.on('users', users => {
-        console.log("FROM Login receing users", users)
         this.setState({ coders: Object.values(users) })
       })
   };
@@ -124,6 +120,7 @@ class App extends Component {
     axios.get('/user/logout')
       .then(res => {
         if (res.status === 200) {
+          socket.emit('log_off');
           Auth.deauthenticateUser();
           this.setState({ auth: Auth.isUserAuthenticated() });
         }
@@ -131,7 +128,7 @@ class App extends Component {
   };
 
   render () {
-    const { auth, joinRoom, form, email, password, room_name, coders, rooms, user } = this.state;
+    const { auth, joinRoom, form, email, password, room_name, coders, user } = this.state;
     return (
       <div>
         <Nav auth={auth} setPage={this.setPage} handleLogOut={this.handleLogOut}/>
@@ -157,8 +154,8 @@ class App extends Component {
               render={ (props) => auth ? <Profile 
                                       room_name={room_name}
                                       coders={coders}
-                                      rooms={rooms}
                                       socket={socket}
+                                      user={user}
                                       handleInputChange={this.handleInputChange}
                                       handleSubmitRoom={this.handleSubmitRoom}
                                       handleJoinRoom={this.handleJoinRoom}

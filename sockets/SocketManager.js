@@ -32,34 +32,31 @@ module.exports = (socket) => {
   // user connects with username
   socket.on('user_joined', (user) => {
     connectedUsers[user._id] = user;
-    console.log("USER JOINED", user)
-    socket.user_id = user._id;
+    connectedUsers[user._id].sID = socket.id;
     io.sockets.emit('users', connectedUsers)
   })
 
   // even on refresh of users on the frontened, a looged in user still gets the users list
-  socket.on('connected', () => {
+  socket.on('connected', (user) => {
+    connectedUsers[user._id] = user;    
+    connectedUsers[user._id].sID = socket.id;  
     io.sockets.emit('users', connectedUsers)
     io.sockets.emit('rooms', rooms)
   });
 
   // user creates & joins a new room
   socket.on('add_room', (room_name, user) => {
-    console.log("add room", user)
-    console.log("add room", room_name)
     rooms[room_name] = new CodeRoom(room_name)
     rooms[room_name].addCoder(user);
     socket.room = room_name;
     socket.join(room_name);
+    io.sockets.emit('rooms', rooms)    
     io.sockets.in(room_name).emit('room_coders', rooms[room_name].coders)
-    io.sockets.emit('rooms', rooms)
   });
 
 
   // send a list of coders in a specific room
   socket.on('coders_list', (room_name) => {
-    console.log("ROOMS", rooms)
-    console.log("ROOM NAME", room_name)
     socket.join(room_name);
     let coders = rooms[room_name].coders;
     io.sockets.in(room_name).emit("room_coders", coders)
@@ -82,7 +79,7 @@ module.exports = (socket) => {
   // user leaves the room
   socket.on('user_left', (data) => {
 
-    // delete the user from the rooom's coders list
+    // delete the user from the room's coders list
     if (data) {
       const { room_name, user } = data;
 
@@ -100,7 +97,28 @@ module.exports = (socket) => {
     }
   })
 
+  // user logs off from the app
+  socket.on('log_off', () => {
+    let updatedUsers = delUser(connectedUsers, socket);
+    io.sockets.emit('users', updatedUsers);    
+  });
+
   // user leaves the app
+  socket.on('disconnect', () => {
+    let updatedUsers = delUser(connectedUsers, socket)
+    io.sockets.emit('users', updatedUsers);
+  });
   
-  
+}
+
+
+// delete the disconnecting / logging off user from the connected-users object
+function delUser (users, socket) {
+
+  for (let user in users) {
+    if (users[user].sID === socket.id) {
+      delete users[user];
+    };
+  };
+  return users;
 }
