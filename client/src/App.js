@@ -47,13 +47,16 @@ class App extends Component {
 
   async getCurrentUser () {
     const token = Auth.getToken();
-    await axios.get('/user/current_user', {
-      headers: {
-        'Authorization': `jwt ${Auth.getToken()}`,
-      }
-    }).then(res => {
-      this.setState({ user: res.data})
-    }).catch(err => console.log(err))
+    try {
+      let res = await axios.get('/user/current_user', {
+        headers: {
+          'Authorization': `jwt ${Auth.getToken()}`,
+        }
+      })
+      this.setState({ user: res.data });
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   // user creates a new room and joins it 
@@ -66,6 +69,7 @@ class App extends Component {
       this.setState({ room_name: "" });
     }
   }
+  
 
   // user joins an exisiting room
   handleJoinRoom = (room_name) => {
