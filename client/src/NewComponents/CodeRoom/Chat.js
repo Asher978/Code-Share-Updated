@@ -13,10 +13,14 @@ export default (props) => {
     }
   }
 
+  const codersLength = () => {
+    return coders.length > 0 ? coders.length : '';
+  }
+
   return (
     <aside className="right-panel">
       <div className="message text-center">
-        <h4 className="message-name">Online Users (2)</h4>
+        <h4 className="message-name">Online Users { codersLength() }</h4>
       </div>
       <ul className="list-group">
          { renderCoders() }
