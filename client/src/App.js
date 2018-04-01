@@ -29,8 +29,8 @@ class App extends Component {
   async componentDidMount () {
     await this.getCurrentUser();
     const { auth } = this.state;
-    if (auth) {
-      const { user } = this.state;
+    const { user } = this.state;
+    if (auth && user) {
       console.log("USER FROM CDM", user)
       socket.connect();
       socket.emit('connected', user);

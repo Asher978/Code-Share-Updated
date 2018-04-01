@@ -373,6 +373,56 @@ div.CodeMirror {
 
 .message h4.message-name { color: #8e909a; font-size: 16px; margin-top: 40px; margin-bottom: 10px; }
 
+button.msg-btn {
+	height: 30px;
+	width: 60px;
+	margin: 0;
+	vertical-align: middle;
+	background: red;
+	border: 0;
+	font-family: 'Roboto', sans-serif;
+	font-size: 12px;
+	font-weight: 300;
+	line-height: 30px;
+	color: #fff;
+	-moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px;
+	text-shadow: none;
+	-moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none;
+	-o-transition: all .3s; -moz-transition: all .3s; -webkit-transition: all .3s; -ms-transition: all .3s; transition: all .3s;
+}
+
+input[type="text"].msg-input {
+	height: 30px;
+	width: 300px;
+	margin: 0;
+	vertical-align: middle;
+	background: #2b2f3e;
+	border: 3px solid #888;
+	font-family: 'Roboto', sans-serif;
+	font-size: 14px;
+	font-weight: 300;
+	line-height: 30px;
+	color: #888;
+	-moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px;
+	-moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none;
+	-o-transition: all .3s; -moz-transition: all .3s; -webkit-transition: all .3s; -ms-transition: all .3s; transition: all .3s;
+}
+
+input[type="text"].msg-input:focus {
+	outline: 0;
+	background: #fff;
+  border: 3px solid #bbb;
+  -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none;
+}
+
+.message-input {
+	position: fixed;
+	bottom: 0px;
+}
+
+.msg-input {
+	width: 260px;
+}
 
 
 .left-pan {
