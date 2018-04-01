@@ -1,13 +1,12 @@
 import React from 'react';
 
-export default () => {
+export default (props) => {
+  const { message } = props;
   return (
     <div>
-    <li className="list-group-item">
-      <span><strong>Ash: </strong><em>Whats up...</em></span>
-    </li><li className="list-group-item">
-      <span><strong>Ryan: </strong><em>What are you upto....</em></span>
-    </li>
+      <li className="list-group-item">
+        <span><strong>{message.username}: </strong><em>{message.message}</em></span>
+      </li>
     </div>
   )
 }
