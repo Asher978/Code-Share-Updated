@@ -55,11 +55,12 @@ module.exports = (socket) => {
   });
 
 
-  // send a list of coders in a specific room
+  // send a list of coders and messages in a specific room on refreshing the page
   socket.on('coders_list', (room_name) => {
     socket.join(room_name);
     let coders = rooms[room_name].coders;
     io.sockets.in(room_name).emit("room_coders", coders)
+    io.sockets.in(room_name).emit('messages', rooms[room_name].messages)
   })
 
   // user joins an existing room
@@ -71,6 +72,13 @@ module.exports = (socket) => {
   })
 
   // user sends a message to the room
+  socket.on('message_sent', data => {
+    rooms[data.room_name].messages.push({
+      message: data.message,
+      username: data.user.username
+    });
+    io.sockets.in(data.room_name).emit('messages', rooms[data.room_name].messages)
+  })
 
   // user types in code editor
 
