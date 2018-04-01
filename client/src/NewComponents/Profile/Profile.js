@@ -28,7 +28,8 @@ export default class Profile extends Component {
   
 
   componentDidMount() {
-    const { socket } = this.props;
+    const { socket, user } = this.props;
+    socket.emit('connected', user);
     socket.on('rooms', rooms => {
       this.setState({ rooms: Object.values(rooms) })
     })
@@ -43,12 +44,12 @@ export default class Profile extends Component {
   }
 
   handleSubmit = (e) => {
-    const { handleSubmitRoom, history, room_name, user } = this.props;
+    const { handleSubmitRoom, history, room_name } = this.props;
     handleSubmitRoom(e);
     history.push({
       pathname: "/coderoom",
       state: {
-        room_name: room_name,
+        room_name: room_name
       }
     })
   }
