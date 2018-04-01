@@ -10,6 +10,9 @@ const passport = require('passport');
 
 // mongoose settings
 mongoose.Promise = global.Promise;
+if (process.env.NODE_ENV === 'production') {
+  mongoose.connect('mongodb://heroku_5htt9pgz:746v3qjacetgn79n0astirgl34@ds135876.mlab.com:35876/heroku_5htt9pgz')  
+} 
 mongoose.connect('mongodb://localhost/code_share');
 mongoose.connection.on('connected', () => {
   console.log('Connected to MongoDB 🚀');
