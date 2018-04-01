@@ -71,6 +71,10 @@ app.use('/code', codeRoutes);
 app.use('/editor', codeRoutes);
 // ----------------  END OF ROUTES ----------------
 
+app.get("*", (req, res) => {  
+  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+});
+
 
 // --------------  SOCKETS  -----------------------
 const io = module.exports.io = require('socket.io')(server);
