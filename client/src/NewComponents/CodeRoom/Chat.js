@@ -3,7 +3,7 @@ import Message from './Message';
 import Coder from './Coder';
 
 export default (props) => {
-  const { coders } = props;
+  const { coders, message, roomMessages, handleOnChangeMessage, handleSubmitMessage } = props;
 
   const renderCoders = () => {
     if(coders.length) {
@@ -12,6 +12,15 @@ export default (props) => {
       })
     }
   }
+
+  const renderMessages = () => {
+    if(roomMessages.length) {
+      return roomMessages.map((message, i) => {
+        return <Message key={i} message={message} />
+      })
+    }
+  }
+  
 
   const codersLength = () => {
     return coders.length > 0 ? coders.length : '';
@@ -26,8 +35,24 @@ export default (props) => {
          { renderCoders() }
       </ul>
       <ul className="list-group">
-        <Message />
+        { renderMessages () }
       </ul>
+
+      <div className="message-input">
+        <form className="form-inline" onSubmit={handleSubmitMessage}>
+          <div className="form-group">
+            <input
+              type="text"
+              className="form-control msg-input"
+              placeholder="Type your message here..."
+              value={message}
+              onChange={handleOnChangeMessage}
+            />
+          </div>
+          <button type="submit" className="msg-btn">Send</button>
+        </form>
+      </div>
+
     </aside>
   )
 }
