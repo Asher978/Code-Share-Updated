@@ -3,7 +3,7 @@ const passport = require('passport');
 const passportConfig = require('../services/auth/jwt');
 const AWS = require('aws-sdk');
 const uuid = require('uuid/v1');
-const keys = require('../keys/dev');
+const keys = require('../keys/keys');
 
 const s3 = new AWS.S3({
   accessKeyId: keys.accessKeyId,
