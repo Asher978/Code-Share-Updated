@@ -12,15 +12,11 @@ const app = express();
 const server = require('http').createServer(app);
 // requiring .env file
 require('dotenv').config();
+const keys = require('./keys/keys');
 
 // mongoose settings
 mongoose.Promise = global.Promise;
-if (process.env.NODE_ENV === 'production') {
-  mongoose.connect('mongodb://heroku_5htt9pgz:746v3qjacetgn79n0astirgl34@ds135876.mlab.com:35876/heroku_5htt9pgz');
-  app.use(express.static('client/build'))
-} else {
-  mongoose.connect('mongodb://localhost/code_share');
-}
+mongoose.connect(keys.mongoURI, { useMongoClient: true });
 mongoose.connection.on('connected', () => {
   console.log('Connected to MongoDB 🚀');
 });
@@ -51,6 +47,15 @@ app.use(express.static(`${__dirname}/public`));
 // --------------  END MIDDLEWARE ---------------
 
 
+if (['production', 'ci'].includes(process.env.NODE_ENV)) {
+  app.use(express.static('client/build'));
+
+  const path = require('path');
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve('client', 'build', 'index.html'));
+  });
+}
+
 
 //  ----------------   PORT SETUP ---------------
 const PORT = process.env.PORT || 3001;
@@ -78,10 +83,6 @@ app.use('/editor', codeRoutes);
 const uploadRoutes = require('./routes/upload-routes');
 app.use('/upload', uploadRoutes);
 // ----------------  END OF ROUTES ----------------
-
-app.get("*", (req, res) => {  
-  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
-});
 
 
 // --------------  SOCKETS  -----------------------

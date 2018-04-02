@@ -3,4 +3,4 @@
 
 .env
 
-/keys/*
+/keys/dev.js
