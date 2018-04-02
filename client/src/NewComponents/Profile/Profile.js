@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import pic from '../../images/profile.jpg';
 import ProfileNavItem from './ProfileNavItem';
+import axios from 'axios';
+import Auth from '../../modules/Auth';
 
 export default class Profile extends Component {
   state = {
     activeItem: null,
     active: false,
     rooms: [],
+    file: null,
     items: [
       {
         id: 1,
@@ -52,6 +55,30 @@ export default class Profile extends Component {
         room_name: room_name
       }
     })
+  };
+
+  handleChangeFile = (e) => {
+    this.setState({ file: e.target.files[0] });
+  }
+
+  handleUpload = async (e) => {
+    e.preventDefault();
+    const { file } = this.state;
+    const { user } = this.props;
+    console.log('FILE-->', file);
+    const url = await axios.get('/upload/image', {
+      headers: {
+        'Authorization': `jwt ${Auth.getToken()}`,
+      }
+    });
+    console.log('URL RESPONSE-->', url)
+    await axios.put(url.data.url, file, {
+      headers: {
+        'Content-Type': file.type
+      }
+    })
+
+    await axios.put(`/user/${user._id}`, { imageUrl: url.data.key })
   }
 
   renderProfileNavItems = () => {
@@ -86,14 +113,28 @@ export default class Profile extends Component {
     })
   }
 
+  renderUserInfo = () => {
+    const { user } = this.props;
+    if(user) {
+      console.log(user)
+      return (
+        <div>
+          <img className="img-circle" src={`https://s3.us-east-2.amazonaws.com/code-share-users-pics/${user.userPic}`} />
+          <h4 className="user-name">{user.username}</h4>
+        </div>
+      )
+    }
+  }
+
   render () {
     const { handleInputChange, handleSubmitRoom, room_name } = this.props;
+    console.log("profile props-->", this.props)
+    const { file } = this.state;
     return (
       <div>
         <aside className="left-panel">
           <div className="user text-center">
-            <img className="img-circle" src={pic}/>
-            <h4 className="user-name">Asher Shaheen</h4>
+            { this.renderUserInfo() }
             <div className="dropdown user-login">
               <button className="btn btn-xs dropdown-toggle btn-rounded profile-btn" type="button" data-toggle="dropdown" aria-expanded="true">
                 <i className="fa fa-circle status-icon available"></i> Available <i className="fa fa-angle-down"></i>
@@ -131,6 +172,14 @@ export default class Profile extends Component {
                 />
               </div>
               <button type="submit" className="btn">Create and Join!</button>
+            </form>
+          </div>
+          <div className="col-sm-4 col-sm-offset-4">
+            <form onSubmit={this.handleUpload}>
+              <input 
+                type="file" accept="/image/*" onChange={this.handleChangeFile}
+              />
+              <button type="submit">Upload</button>
             </form>
           </div>
         </aside>
