@@ -7,7 +7,7 @@ export default (props) => {
       <div className="col-sm-4 col-sm-offset-1">
         <form role="form" onSubmit={handleLogin} className="l-form">
           <div className="form-group">
-            <label className="sr-only" htmlFor="username">Email</label>
+            <label className="sr-only" htmlFor="email">Email</label>
             <input 
               type="email"
               name="email"

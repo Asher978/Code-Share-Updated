@@ -15,7 +15,8 @@ export default class Main extends Component {
 			handleLogin,
 			handleRegister,
 			email,
-			password
+			password,
+			username
 		} = this.props;
 		
     return (
@@ -41,6 +42,9 @@ export default class Main extends Component {
 							</div>
 						</div>
 						{ form === 'register' &&  <Register
+																				email={email}
+																				password={password}
+																				username={username}
 																				handleInputChange={handleInputChange}
 																				handleRegister={handleRegister}
 																			/> 

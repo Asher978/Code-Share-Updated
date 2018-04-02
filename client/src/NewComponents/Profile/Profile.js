@@ -116,7 +116,6 @@ export default class Profile extends Component {
   renderUserInfo = () => {
     const { user } = this.props;
     if(user) {
-      console.log(user)
       return (
         <div>
           <img className="img-circle" src={`https://s3.us-east-2.amazonaws.com/code-share-users-pics/${user.userPic}`} />
@@ -128,7 +127,6 @@ export default class Profile extends Component {
 
   render () {
     const { handleInputChange, handleSubmitRoom, room_name } = this.props;
-    console.log("profile props-->", this.props)
     const { file } = this.state;
     return (
       <div>

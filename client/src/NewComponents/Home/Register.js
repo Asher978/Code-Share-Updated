@@ -1,26 +1,40 @@
 import React from 'react';
 
 export default (props) => {
-  console.log("reg Props", props)
+  const { email, password, username, handleInputChange, handleRegister } = props;
   return (
     <div className="row register-form">
       <div className="col-sm-4 col-sm-offset-1">
-        <form role="form" action="" method="post" className="r-form">
+        <form role="form" className="r-form" onSubmit={handleRegister}>
           <div className="form-group">
-            <label className="sr-only" htmlFor="r-form-first-name">First name</label>
-            <input type="text" name="r-form-first-name" placeholder="First name..." className="r-form-first-name form-control" id="r-form-first-name" />
+            <input 
+              type="text"
+              name="username"
+              placeholder="User Name..."
+              className="r-form-first-name form-control"
+              value={username}
+              onChange={handleInputChange}
+            />
           </div>
           <div className="form-group">
-            <label className="sr-only" htmlFor="r-form-last-name">Last name</label>
-            <input type="text" name="r-form-last-name" placeholder="Last name..." className="r-form-last-name form-control" id="r-form-last-name" />
+            <input
+              type="email"
+              name="email"
+              placeholder="Email..."
+              className="r-form-last-name form-control"
+              value={email}
+              onChange={handleInputChange}
+            />
           </div>
           <div className="form-group">
-            <label className="sr-only" htmlFor="r-form-email">Email</label>
-            <input type="text" name="r-form-email" placeholder="Email..." className="r-form-email form-control" id="r-form-email" />
-          </div>
-          <div className="form-group">
-            <label className="sr-only" htmlFor="r-form-about-yourself">About yourself</label>
-            <textarea name="r-form-about-yourself" placeholder="About yourself..." className="r-form-about-yourself form-control" id="r-form-about-yourself"></textarea>
+            <input
+              type="password"
+              name="password"
+              placeholder="Password..."
+              className="r-form-email form-control"
+              value={password}
+              onChange={handleInputChange}
+            />
           </div>
           <button type="submit" className="btn">Sign me up!</button>
         </form>
