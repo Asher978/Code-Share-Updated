@@ -115,13 +115,18 @@ export default class Profile extends Component {
 
   renderUserInfo = () => {
     const user = User.getUser();
-    if(user) {
+    if(user.userPic) {
       return (
         <div>
           <img className="img-circle" src={`https://s3.us-east-2.amazonaws.com/code-share-users-pics/${user.userPic}`} />
           <h4 className="user-name">{user.username}</h4>
         </div>
       )
+    } else {
+        <div>
+          <img className="img-circle" src={pic} />
+          <h4 className="user-name">{user.username}</h4>
+        </div>
     }
   }
 
