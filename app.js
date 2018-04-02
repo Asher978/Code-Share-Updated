@@ -61,9 +61,9 @@ server.listen(PORT, () => {
 
 // ---------------  ROUTES  -----------------
 //index route
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+// app.get('/', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'public', 'index.html'));
+// });
 
 // User routes
 const userRoutes = require('./routes/user-routes');
