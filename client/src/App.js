@@ -20,6 +20,7 @@ class App extends Component {
     form: "login",
     email: "",
     password: "",
+    username: "",
     socket: null,
     room_name: "",
     coders: [],
@@ -96,7 +97,24 @@ class App extends Component {
   };
 
   handleRegister = (e) => {
+    e.preventDefault();
+    const { email, password, username } = this.state;
+    axios.post('/user/register', { email, password, username })
+      .then(res => {
+        const { token, newUser } = res.data;
+        if (token && newUser) {
+          Auth.authenticateToken(token);
+          socket.emit('user_joined', newUser)
+          this.setState({
+            auth: Auth.isUserAuthenticated(),
+            user: newUser
+          })
+        }
+      }).catch(err => console.log(err));
 
+      socket.on('users', users => {
+        this.setState({ coders: Object.values(users) })
+      })
   };
 
   handleLogin = (e) => {
@@ -132,7 +150,7 @@ class App extends Component {
   };
 
   render () {
-    const { auth, joinRoom, form, email, password, room_name, coders, user } = this.state;
+    const { auth, joinRoom, form, email, password, room_name, coders, user, username } = this.state;
     return (
       <div>
         <Nav auth={auth} setPage={this.setPage} handleLogOut={this.handleLogOut}/>
@@ -150,6 +168,7 @@ class App extends Component {
                   handleRegister={this.handleRegister}
                   email={email}
                   password={password}
+                  username={username}
                   {...props}
                 /> : <Redirect to="/profile" /> }
             />
