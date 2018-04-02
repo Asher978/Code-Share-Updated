@@ -83,7 +83,7 @@ app.get("*", (req, res) => {
 
 
 // --------------  SOCKETS  -----------------------
-const io = module.exports.io = require('socket.io')(server);
+const io = module.exports.io = require('socket.io').listen(server);
 const SocketManager = require('./sockets/SocketManager');
 io.on('connection', SocketManager);
 // ------------- END SOCKETS ----------------------
