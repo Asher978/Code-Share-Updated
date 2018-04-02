@@ -72,6 +72,9 @@ app.use('/user', userRoutes);
 const codeRoutes = require('./routes/code-routes');
 app.use('/code', codeRoutes);
 app.use('/editor', codeRoutes);
+
+const uploadRoutes = require('./routes/upload-routes');
+app.use('/upload', uploadRoutes);
 // ----------------  END OF ROUTES ----------------
 
 app.get("*", (req, res) => {  
