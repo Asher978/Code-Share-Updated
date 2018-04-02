@@ -63,7 +63,7 @@ class App extends Component {
   handleSubmitRoom = (e) => {
     e.preventDefault();
     const { room_name, user } = this.state;
-    if(room_name, user) {
+    if(room_name && user) {
       socket.emit('add_room', room_name, user);
       socket.emit('connected', user);
       this.setState({ room_name: "" });

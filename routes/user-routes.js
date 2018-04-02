@@ -9,7 +9,9 @@ userRoutes.post('/register', validateBody(schemas.authSchema), usersController.r
 
 userRoutes.post('/login', passport.authenticate('local', { session: false }), usersController.login);
 
-userRoutes.get('/current_user', passport.authenticate('jwt', { session: false }), usersController.getUser)
+userRoutes.get('/current_user', passport.authenticate('jwt', { session: false }), usersController.getUser);
+
+userRoutes.put('/:id', usersController.addImage);
 
 userRoutes.get('/logout', (req, res) => {
   req.logout();

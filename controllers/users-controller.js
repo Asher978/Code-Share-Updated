@@ -40,6 +40,20 @@ module.exports = {
         res.status(200).json({ token, user });
     },
 
+    addImage: async (req, res, next) => {
+        const { imageUrl } = req.body;
+        let updatedUserImage = {
+            userPic: imageUrl
+        };
+        await User.findByIdAndUpdate(req.params.id, updatedUserImage, {"new": true}, (err, user) => {
+            if (!err) {
+                console.log("after image load", user)
+            } else {
+                console.log('error', err)
+            }
+        })
+    },
+
     getUser: async (req, res, next) => {
         res.send(req.user)
     }
