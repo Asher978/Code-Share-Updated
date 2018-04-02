@@ -7,12 +7,17 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const passport = require('passport');
+// instance of express app
+const app = express();
+const server = require('http').createServer(app);
+// requiring .env file
+require('dotenv').config();
 
 // mongoose settings
 mongoose.Promise = global.Promise;
 if (process.env.NODE_ENV === 'production') {
   mongoose.connect('mongodb://heroku_5htt9pgz:746v3qjacetgn79n0astirgl34@ds135876.mlab.com:35876/heroku_5htt9pgz');
-  app.use(express.static('client/build')) 
+  app.use(express.static('client/build'))
 } else {
   mongoose.connect('mongodb://localhost/code_share');
 }
@@ -24,11 +29,6 @@ mongoose.connection.on('error', err => {
 });
 
 
-// instance of express app
-const app = express();
-const server = require('http').createServer(app);
-// requiring .env file
-require('dotenv').config();
 
 
 // --------------  MIDDLEWARE  ---------------
@@ -79,9 +79,9 @@ const uploadRoutes = require('./routes/upload-routes');
 app.use('/upload', uploadRoutes);
 // ----------------  END OF ROUTES ----------------
 
-// app.get("*", (req, res) => {  
-//   res.sendFile(path.join(__dirname, "client", "build", "index.html"));
-// });
+app.get("*", (req, res) => {  
+  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+});
 
 
 // --------------  SOCKETS  -----------------------
