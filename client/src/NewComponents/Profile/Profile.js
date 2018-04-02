@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import pic from '../../images/profile.jpg';
 import ProfileNavItem from './ProfileNavItem';
 import axios from 'axios';
+import User from '../../modules/User';
 import Auth from '../../modules/Auth';
 
 export default class Profile extends Component {
@@ -31,7 +32,8 @@ export default class Profile extends Component {
   
 
   componentDidMount() {
-    const { socket, user } = this.props;
+    const { socket } = this.props;
+    const user = User.getUser();
     socket.emit('connected', user);
     socket.on('rooms', rooms => {
       this.setState({ rooms: Object.values(rooms) })
@@ -65,13 +67,11 @@ export default class Profile extends Component {
     e.preventDefault();
     const { file } = this.state;
     const { user } = this.props;
-    console.log('FILE-->', file);
     const url = await axios.get('/upload/image', {
       headers: {
         'Authorization': `jwt ${Auth.getToken()}`,
       }
     });
-    console.log('URL RESPONSE-->', url)
     await axios.put(url.data.url, file, {
       headers: {
         'Content-Type': file.type
@@ -114,7 +114,7 @@ export default class Profile extends Component {
   }
 
   renderUserInfo = () => {
-    const { user } = this.props;
+    const user = User.getUser();
     if(user) {
       return (
         <div>

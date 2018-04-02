@@ -3,6 +3,7 @@ import io from 'socket.io-client';
 import { BrowserRouter as Router, Route, Redirect, withRouter } from 'react-router-dom';
 import axios from 'axios';
 import Auth from './modules/Auth';
+import User from './modules/User';
 
 import Main from './NewComponents/Home/Main';
 import Nav from './NewComponents/Nav';
@@ -27,12 +28,13 @@ class App extends Component {
   }
   
   
-  async componentDidMount () {
-    await this.getCurrentUser();
+  componentDidMount () {
+    // await this.getCurrentUser();
     const { auth } = this.state;
-    const { user } = this.state;
-    if (auth && user) {
-      console.log("USER FROM CDM", user)
+    // const { user } = this.state;
+    const user = User.getUser();
+    if (auth) {
+      console.log('CDM', user)
       socket.connect();
       socket.emit('connected', user);
       socket.on('users', users => {
@@ -46,24 +48,28 @@ class App extends Component {
     socket.emit('disconnect')
   }
 
-  async getCurrentUser () {
-    const token = Auth.getToken();
-    try {
-      let res = await axios.get('/user/current_user', {
-        headers: {
-          'Authorization': `jwt ${Auth.getToken()}`,
-        }
-      })
-      this.setState({ user: res.data });
-    } catch (err) {
-      console.log(err);
-    }
-  }
+  // async getCurrentUser () {
+  //   // const token = Auth.getToken();
+  //   // try {
+  //   //   let res = await axios.get('/user/current_user', {
+  //   //     headers: {
+  //   //       'Authorization': `jwt ${Auth.getToken()}`,
+  //   //     }
+  //   //   })
+  //   //   this.setState({ user: res.data });
+  //   // } catch (err) {
+  //   //   console.log(err);
+  //   // }
+
+  //   let user = await User.getUser();
+  //   // console.log("CDM", user)
+  // }
 
   // user creates a new room and joins it 
   handleSubmitRoom = (e) => {
     e.preventDefault();
-    const { room_name, user } = this.state;
+    const { room_name } = this.state;
+    const user = User.getUser();
     if(room_name && user) {
       socket.emit('add_room', room_name, user);
       socket.emit('connected', user);
@@ -74,13 +80,15 @@ class App extends Component {
 
   // user joins an exisiting room
   handleJoinRoom = (room_name) => {
-    const { user } = this.state;
+    // const { user } = this.state;
+    const user = User.getUser()
    socket.emit('join_room', room_name, user) 
   }
 
   // user leaves a room
   handleLeaveRoom = (room_name) => {
-    const { user } = this.state;
+    // const { user } = this.state;
+    const user = User.getUser();
     socket.emit('user_left', {room_name, user});
   }
 
@@ -124,6 +132,7 @@ class App extends Component {
       .then(res => {
         const { token, user } = res.data;
         if (token && user) {
+          User.saveUser(user);
           Auth.authenticateToken(token);
           socket.emit('user_joined', user)
           this.setState({
@@ -144,13 +153,14 @@ class App extends Component {
         if (res.status === 200) {
           socket.emit('log_off');
           Auth.deauthenticateUser();
+          User.deleteUser();
           this.setState({ auth: Auth.isUserAuthenticated() });
         }
       })
   };
 
   render () {
-    const { auth, joinRoom, form, email, password, room_name, coders, user, username } = this.state;
+    const { auth, joinRoom, form, email, password, room_name, coders, username } = this.state;
     return (
       <div>
         <Nav auth={auth} setPage={this.setPage} handleLogOut={this.handleLogOut}/>
@@ -178,7 +188,6 @@ class App extends Component {
                                       room_name={room_name}
                                       coders={coders}
                                       socket={socket}
-                                      user={user}
                                       handleInputChange={this.handleInputChange}
                                       handleSubmitRoom={this.handleSubmitRoom}
                                       handleJoinRoom={this.handleJoinRoom}
@@ -191,7 +200,6 @@ class App extends Component {
             <Route exact path="/coderoom"
               render={ (props) => auth ? <CodeRoom 
                                       socket={socket}
-                                      user={user}
                                       handleLeaveRoom={this.handleLeaveRoom}
                                       {...props}
                                     /> : <Redirect to="/" /> }

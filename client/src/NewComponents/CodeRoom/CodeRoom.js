@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
+import User from '../../modules/User'
 
 import Code from './Code';
 import Chat from './Chat';
@@ -18,9 +19,7 @@ export default class CodeRoom extends Component {
     const { room_name } = this.props.location.state;
     if (!coders.length) {
       socket.emit('coders_list', room_name);
-      console.log("NO CODERS")
       socket.on("room_coders", coders => {
-        console.log('Rooms coders', coders)
         this.setState({ coders })
       })
 
@@ -38,7 +37,6 @@ export default class CodeRoom extends Component {
   handleLeave = () => {
     const { handleLeaveRoom, history } = this.props;
     const { room_name } = this.props.location.state;
-    console.log("from handle leave room", room_name)
     handleLeaveRoom(room_name);
     history.push({
       pathname: "/profile",
@@ -50,7 +48,8 @@ export default class CodeRoom extends Component {
 
   handleSubmitMessage = (e) => {
     e.preventDefault();
-    const { socket, user } = this.props;
+    const { socket } = this.props;
+    const user = User.getUser();
     const { message } = this.state;
     const { room_name } = this.props.location.state;    
     socket.emit('message_sent', {
@@ -62,11 +61,7 @@ export default class CodeRoom extends Component {
   }
 
 
-
-  
-
   render () {
-    console.log('CODE ROOM PROPS-->', this.props)
     const { coders, message, roomMessages } = this.state;
     const { room_name } = this.props.location.state;    
     return (
