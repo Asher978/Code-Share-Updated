@@ -10,7 +10,7 @@ import Profile from './NewComponents/Profile/Profile';
 import CodeRoom from './NewComponents/CodeRoom/CodeRoom';
 
 import './styles/App.css';
-const socket = io.connect();
+const socket = io();
 
 class App extends Component {
   state = {
